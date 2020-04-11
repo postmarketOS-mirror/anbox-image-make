@@ -1,0 +1,4 @@
+# This directory should stay empty
+*
+# Well, except for the gitignore
+!.gitignore
