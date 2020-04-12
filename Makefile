@@ -102,7 +102,7 @@ build: $(CHROOT_PATH)
 	export _JAVA_OPTIONS="-Xmx3072m" # increase heap size
 	cd /home/build/source
 	. build/envsetup.sh
-	lunch anbox_$$ARCH-userdebug
+	lunch anbox_$$ARCH-user
 	make -j8
 	EOT
 	EOT2
