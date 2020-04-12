@@ -8,6 +8,7 @@ ANBOX_SOURCE ?= ./source
 ANBOX_OUT ?= ./out
 ANBOX_IMAGE_OUT ?= .
 CARCH ?= x86_64
+REPO_OPTIONS ?= --depth=1 # shallow git clone
 # end of configuration options
 
 
@@ -25,6 +26,25 @@ arch_dir_aarch64 := arm64
 arch_dir_armv7 := armv7-a-neon
 arch_dir_x86_64 := x86_64
 ARCH_DIR := $(arch_dir_${CARCH})
+
+
+# initialize repo
+source/.repo:
+	cd source; yes n | repo init -u -b pmanbox $(REPO_OPTIONS) \
+		https://github.com/pmanbox/platform_manifests.git
+
+
+# we get the source using `make fetch`
+source/Makefile:
+	$(MAKE) fetch
+
+
+# update image source
+.PHONY: fetch
+fetch: source/.repo
+	(cd source; repo sync -j8)
+	mkdir source/out
+
 
 .PHONY: remove-chroot
 remove-chroot:
@@ -84,7 +104,7 @@ chroot: $(CHROOT_PATH)
 
 .PHONY: build
 .ONESHELL: build
-build: $(CHROOT_PATH)
+build: source/Makefile $(CHROOT_PATH)
 	export CHROOT_PATH=$(CHROOT_PATH) ANBOX_SOURCE=$(ANBOX_SOURCE) \
 		ANBOX_OUT=$(ANBOX_OUT) ARCH=$(ARCH)
 	mountpoint -q $$CHROOT_PATH/home/build/source || \

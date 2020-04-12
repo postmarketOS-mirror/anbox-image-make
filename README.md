@@ -13,4 +13,5 @@ probably want to set.
 ## Dependencies
 * `debootstrap`;
 * `arch-chroot`;
-* a network connection to prepare the chroot.
+* `repo`;
+* a network connection to prepare the chroot and to fetch the source.
