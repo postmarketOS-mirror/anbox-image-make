@@ -3,7 +3,7 @@
 # Copyright 2020 Antoine Fontaine <antoine.fontaine@epfl.ch>
 
 # configuration options
-CHROOT_PATH ?= /var/chroot/$(RELEASE)/
+CHROOT_PATH ?= /var/chroot/$(RELEASE)
 ANBOX_SOURCE ?= ./source
 ANBOX_OUT ?= ./out
 ANBOX_IMAGE_OUT ?= .
@@ -51,6 +51,10 @@ remove-chroot:
 	sudo umount $(CHROOT_PATH)/home/build/source/out ||:
 	sudo umount $(CHROOT_PATH)/home/build/source ||:
 	sudo rm -rf $(CHROOT_PATH)
+	@# in case there is a leftover unfinished chroot
+	sudo umount $(CHROOT_PATH)-tmp/sys ||:
+	sudo umount $(CHROOT_PATH)-tmp/proc ||:
+	sudo rm -rf $(CHROOT_PATH)-tmp ||:
 
 .PHONY: clean
 clean:
@@ -64,8 +68,13 @@ nuke: clean remove-chroot
 .ONESHELL: $(CHROOT_PATH)
 $(CHROOT_PATH):
 	export CHROOT_PATH=$(CHROOT_PATH) RELEASE=$(RELEASE) MIRROR=$(MIRROR)
-	sudo debootstrap --variant=buildd --arch amd64 $$RELEASE $$CHROOT_PATH $$MIRROR
-	sudo arch-chroot $$CHROOT_PATH <<EOT
+	set -e
+	sudo umount $$CHROOT_PATH-tmp/sys ||:
+	sudo umount $$CHROOT_PATH-tmp/proc ||:
+	sudo rm -rf $$CHROOT_PATH-tmp ||:
+	sudo debootstrap --variant=buildd --arch amd64 $$RELEASE \
+		$$CHROOT_PATH-tmp $$MIRROR
+	sudo arch-chroot $$CHROOT_PATH-tmp <<EOT
 	apt update
 	apt install -y \
 		git-core \
@@ -96,6 +105,7 @@ $(CHROOT_PATH):
 	useradd build -m -s /bin/bash
 	su build -c "mkdir ~/source"
 	EOT
+	sudo mv $$CHROOT_PATH-tmp $$CHROOT_PATH
 
 # alias for $(CHROOT_PATH), meant to be called from outside of the Makefile (`make chroot`)
 .PHONY: chroot
