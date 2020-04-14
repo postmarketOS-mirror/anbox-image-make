@@ -56,12 +56,17 @@ remove-chroot:
 	sudo umount $(CHROOT_PATH)-tmp/proc ||:
 	sudo rm -rf $(CHROOT_PATH)-tmp ||:
 
+.PHONY: remove-source
+remove-source:
+	rm -rf $(ANBOX_SOURCE)/* ||:
+	rm -rf $(ANBOX_SOURCE)/.repo ||:
+
 .PHONY: clean
 clean:
 	rm -rf $(ANBOX_OUT)/*
 
 .PHONY: nuke
-nuke: clean remove-chroot
+nuke: clean remove-chroot remove-source
 
 
 # creates a chroot at $(CHROOT_PATH)
