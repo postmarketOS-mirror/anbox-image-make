@@ -12,6 +12,33 @@ REPO_OPTIONS ?= --depth=1 # shallow git clone
 # end of configuration options
 
 
+.PHONY: help
+help:
+	@echo 'make-anbox-image [target] [PARAM=value ...]'
+	@echo
+	@echo '  tl;dr: `make-anbox-image image` and grab the image in the current directory.'
+	@echo
+	@echo '  useful targets:'
+	@echo '    * fetch: gets the latest version of the source'
+	@echo '    * chroot: create the chroot we build in'
+	@echo '    * build: build Android'
+	@echo '    * image: creates the image'
+	@echo '    * clean: remove build objects to start building again'
+	@echo '    * remove-chroot: remove the chroot. It will be recreated as needed'
+	@echo '    * remove-source: delete the source code. It will be fetched again when wanted'
+	@echo '    * nuke: all 3 above, for a pristine build or before a clean uninstall'
+	@echo
+	@echo '  useful parameters:'
+	@echo '    * CHROOT_PATH: where to put the chroot. Defaults to $(CHROOT_PATH).'
+	@echo '        this variable should not end with a /'
+	@echo '    * ANBOX_SOURCE: where the android source code is stored. Defaults to $(ANBOX_SOURCE)'
+	@echo '    * ANBOX_OUT: where the build files will be put. Defaults to $(ANBOX_OUT)'
+	@echo '    * ANBOX_IMAGE_OUT: where to put the resulting image. Defaults to ./'
+	@echo '    * CARCH: which arch the image should be for. Defaults to x86_64'
+	@echo '    * REPO_OPTIONS: options to give to `repo` when fetching the source.'
+	@echo '        Defaults to --depth=1 to download only 10GB of sources'
+
+
 RELEASE := xenial
 MIRROR := http://archive.ubuntu.com/ubuntu/
 
