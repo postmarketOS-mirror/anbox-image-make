@@ -154,11 +154,9 @@ build: source/Makefile $(CHROOT_PATH)
 		sudo mount $$ANBOX_SOURCE --bind -o ro \
 			$$CHROOT_PATH/home/build/source
 	mountpoint -q $$CHROOT_PATH/home/build/source/out || \
-		sudo mount $$ANBOX_OUT --bind -o rw || \
+		sudo mount $$ANBOX_OUT --bind -o rw \
 			$$CHROOT_PATH/home/build/source/out \
 			# building out of tree is broken
-	mountpoint -q $$CHROOT_PATH/home/build/source || sudo mount $$ANBOX_SOURCE --bind -o ro $$CHROOT_PATH/home/build/source
-	mountpoint -q $$CHROOT_PATH/home/build/source/out || sudo mount $$ANBOX_OUT --bind -o rw $$CHROOT_PATH/home/build/source/out # building out of tree is broken
 	sudo arch-chroot $$CHROOT_PATH <<EOT2
 	sudo -u build -i <<EOT
 	export LC_ALL=C.UTF-8
