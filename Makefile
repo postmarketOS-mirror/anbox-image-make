@@ -71,7 +71,7 @@ source/Makefile:
 .PHONY: fetch
 fetch: source/.repo
 	(cd source; repo sync -j8)
-	mkdir source/out
+	mkdir -p source/out
 
 
 .PHONY: remove-chroot
