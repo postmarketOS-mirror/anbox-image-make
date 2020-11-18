@@ -57,8 +57,9 @@ ARCH_DIR := $(arch_dir_${CARCH})
 
 # initialize repo
 source/.repo:
-	cd source; yes n | repo init -u -b pmanbox $(REPO_OPTIONS) \
-		https://github.com/pmanbox/platform_manifests.git
+	cd source; yes n | repo init -u \
+		https://github.com/pmanbox/platform_manifests.git \
+		-b pmanbox $(REPO_OPTIONS)
 
 
 # we get the source using `make fetch`
